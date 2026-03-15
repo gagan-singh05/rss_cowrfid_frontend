@@ -604,8 +604,8 @@ class _BlockDetailPageState extends State<BlockDetailPage> {
     }
   }
 
-  int get _inCount => _scans.where((s) => s['direction'] == 'IN').length;
-  int get _outCount => _scans.where((s) => s['direction'] == 'OUT').length;
+  // Removed _inCount and _outCount as they are no longer needed
+
 
   @override
   Widget build(BuildContext context) {
@@ -766,13 +766,7 @@ class _BlockDetailPageState extends State<BlockDetailPage> {
       child: Row(
         children: [
           _buildSummaryChip(Icons.format_list_numbered_rounded,
-              '${_scans.length}', 'Total', const Color(0xFF6C3CE1)),
-          const SizedBox(width: 10),
-          _buildSummaryChip(Icons.logout_rounded, '$_outCount', 'OUT',
-              Colors.orange.shade700),
-          const SizedBox(width: 10),
-          _buildSummaryChip(Icons.login_rounded, '$_inCount', 'IN',
-              const Color(0xFF1DB954)),
+              '${_scans.length}', 'Total Scans', const Color(0xFF6C3CE1)),
         ],
       ),
     );
@@ -872,11 +866,9 @@ class _BlockDetailPageState extends State<BlockDetailPage> {
   }
 
   Widget _buildScanCard(Map<String, dynamic> scan, int index) {
-    final bool isOut = scan['direction'] == 'OUT';
-    final Color dirColor =
-        isOut ? Colors.orange.shade700 : const Color(0xFF1DB954);
+    const Color primaryColor = Color(0xFF6C3CE1);
     final String time = scan['time'] ?? '--';
-    final String name = scan['name'] ?? 'Unknown';
+    final String date = scan['date'] ?? '--';
     final String uid = scan['uid'] ?? '--';
 
     return Container(
@@ -899,52 +891,26 @@ class _BlockDetailPageState extends State<BlockDetailPage> {
           width: 46,
           height: 46,
           decoration: BoxDecoration(
-            color: dirColor.withValues(alpha: 0.1),
+            color: primaryColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(
-            isOut ? Icons.logout_rounded : Icons.login_rounded,
-            color: dirColor,
+          child: const Icon(
+            Icons.tag_rounded,
+            color: primaryColor,
             size: 22,
           ),
         ),
-        title: Text(name,
+        title: Text(uid,
             style: const TextStyle(
-                fontWeight: FontWeight.w700, fontSize: 15)),
-        subtitle: Text(uid,
-            style: TextStyle(
-                fontSize: 11,
-                color: Colors.grey.shade500,
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
                 fontFamily: 'monospace')),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-              decoration: BoxDecoration(
-                color: dirColor.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                scan['direction'] ?? '--',
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                    color: dirColor,
-                    letterSpacing: 0.5),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              time.length > 5 ? time.substring(0, 5) : time,
-              style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey.shade500,
-                  fontWeight: FontWeight.w600),
-            ),
-          ],
+        subtitle: Text(date,
+            style: TextStyle(fontSize: 12, color: Colors.grey.shade500)),
+        trailing: Text(
+          time.length > 5 ? time.substring(0, 5) : time,
+          style: const TextStyle(
+              fontSize: 16, color: primaryColor, fontWeight: FontWeight.w900),
         ),
       ),
     );
